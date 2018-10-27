@@ -3,10 +3,10 @@ package com.example.dsdatsme.nnewsapp;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.Locale;
 
 public class News {
     private String mTitle ;
@@ -28,10 +28,15 @@ public class News {
     public String getAuthor() {return "- "+mAuthor;}
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public String getDateTime() {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_DATE_TIME;
-        TemporalAccessor accessor = timeFormatter.parse(mDateTime);
-        return DateTimeFormatter.ofPattern("MMMM dd, yyyy  HH:mm:ss", Locale.ENGLISH).format(accessor);
+    public String getDateTime() throws ParseException {
+        // ISO date format by Gurdian API
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        Date date = formatter.parse(mDateTime.replaceAll("Z$", "+0000"));
+        // Custom format for displaying
+        SimpleDateFormat fmtOut = new SimpleDateFormat("MMMM dd, yyyy  HH:mm");
+
+        return fmtOut.format(date);
+
     }
     public String getUrl() {return mUrl;}
 }
